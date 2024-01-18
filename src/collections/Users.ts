@@ -12,6 +12,7 @@ const adminsAndUser: Access = ({ req: { user } }) => {
 
 export const Users: CollectionConfig = {
   slug: 'users',
+  auth: true,
   access: {
     read: adminsAndUser,
     create: () => true,
