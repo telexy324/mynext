@@ -4,6 +4,7 @@ import { mongooseAdapter } from '@payloadcms/db-mongodb'
 import { slateEditor } from '@payloadcms/richtext-slate'
 import path from 'path'
 import { Users } from './collections/Users'
+import { Systems } from './collections/Systems'
 import dotenv from 'dotenv'
 
 dotenv.config({
@@ -12,7 +13,7 @@ dotenv.config({
 
 export default buildConfig({
   serverURL: process.env.NEXT_PUBLIC_SERVER_URL || '',
-  collections: [Users],
+  collections: [Users, Systems],
   routes: {
     admin: '/backend',
   },

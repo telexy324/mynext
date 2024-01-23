@@ -9,6 +9,7 @@
 export interface Config {
   collections: {
     users: User;
+    systems: System;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
@@ -27,6 +28,14 @@ export interface User {
   loginAttempts?: number | null;
   lockUntil?: string | null;
   password: string | null;
+}
+export interface System {
+  id: string;
+  status: 'beforeIntegration' | 'integrating' | 'inUse' | 'toDelete';
+  user: (string | User)[];
+  name: string;
+  updatedAt: string;
+  createdAt: string;
 }
 export interface PayloadPreference {
   id: string;
