@@ -11,11 +11,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn } from "next-auth/react";
-import { useSearchParams } from "next/navigation";
+import {useRouter, useSearchParams} from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import GoogleSignInButton from "../github-auth-button";
+import {AuthCredentialsValidator, TAuthCredentialsValidator} from "@/lib/validators/account-credentials-validator";
+import { trpc } from '@/trpc/client'
 
 const formSchema = z.object({
   email: z.string().email({ message: "Enter a valid email address" }),
@@ -25,6 +27,7 @@ type UserFormValue = z.infer<typeof formSchema>;
 
 export default function UserAuthForm() {
   const searchParams = useSearchParams();
+  const router = useRouter()
   const callbackUrl = searchParams.get("callbackUrl");
   const [loading, setLoading] = useState(false);
   const defaultValues = {
@@ -35,18 +38,46 @@ export default function UserAuthForm() {
     defaultValues,
   });
 
-  const onSubmit = async (data: UserFormValue) => {
-    signIn("credentials", {
-      email: data.email,
-      callbackUrl: callbackUrl ?? "/dashboard",
-    });
-  };
+  // const onSubmit = async (data: UserFormValue) => {
+  //   signIn("credentials", {
+  //     email: data.email,
+  //     callbackUrl: callbackUrl ?? "/dashboard",
+  //   });
+  // };
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<TAuthCredentialsValidator>({
+    resolver: zodResolver(AuthCredentialsValidator),
+  })
+
+  const { mutate: signIn } =
+      trpc.auth.signIn.useMutation({
+        onSuccess: async () => {
+          router.refresh()
+          router.push('/dashboard')
+        },
+        onError: (err) => {
+          if (err.data?.code === 'UNAUTHORIZED') {
+            console.log('Invalid email or password.')
+          }
+        },
+      })
+
+  const onSubmit = ({
+                      email,
+                      password,
+                    }: TAuthCredentialsValidator) => {
+    signIn({ email, password })
+  }
 
   return (
     <>
       <Form {...form}>
         <form
-          onSubmit={form.handleSubmit(onSubmit)}
+          onSubmit={handleSubmit(onSubmit)}
           className="space-y-2 w-full"
         >
           <FormField
@@ -65,6 +96,24 @@ export default function UserAuthForm() {
                 </FormControl>
                 <FormMessage />
               </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+                <FormItem>
+                    <FormLabel>Password</FormLabel>
+                    <FormControl>
+                        <Input
+                            type="password"
+                            placeholder="password"
+                            disabled={loading}
+                            {...field}
+                        />
+                    </FormControl>
+                    <FormMessage />
+                </FormItem>
             )}
           />
 
