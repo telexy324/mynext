@@ -33,26 +33,24 @@ export default function UserAuthForm() {
   const [loading, setLoading] = useState(false);
   const defaultValues = {
     email: "demo@gmail.com",
+    password: "12345678"
   };
   const form = useForm<UserFormValue>({
     resolver: zodResolver(formSchema),
     defaultValues,
   });
 
-  // const onSubmit = async (data: UserFormValue) => {
-  //   signIn("credentials", {
-  //     email: data.email,
-  //     callbackUrl: callbackUrl ?? "/dashboard",
-  //   });
-  // };
+  const onSubmit = async (data: UserFormValue) => {
+    signIn(data);
+  };
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<TAuthCredentialsValidator>({
-    resolver: zodResolver(AuthCredentialsValidator),
-  })
+  // const {
+  //   register,
+  //   handleSubmit,
+  //   formState: { errors },
+  // } = useForm<TAuthCredentialsValidator>({
+  //   resolver: zodResolver(AuthCredentialsValidator),
+  // })
 
   const { mutate: signIn } =
       trpc.auth.signIn.useMutation({
@@ -67,18 +65,18 @@ export default function UserAuthForm() {
         },
       })
 
-  const onSubmit = ({
-                      email,
-                      password,
-                    }: TAuthCredentialsValidator) => {
-    signIn({ email, password })
-  }
+  // const onSubmit = ({
+  //                     email,
+  //                     password,
+  //                   }: TAuthCredentialsValidator) => {
+  //   signIn({ email, password })
+  // }
 
   return (
     <>
       <Form {...form}>
         <form
-          onSubmit={handleSubmit(onSubmit)}
+          onSubmit={form.handleSubmit(onSubmit)}
           className="space-y-2 w-full"
         >
           <FormField
