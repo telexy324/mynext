@@ -6,6 +6,7 @@ import path from 'path'
 import { Users } from './collections/Users'
 import { Systems } from './collections/Systems'
 import dotenv from 'dotenv'
+import {NavItems} from "@/collections/NavItems";
 
 dotenv.config({
   path: path.resolve(__dirname, '../.env'),
@@ -13,7 +14,7 @@ dotenv.config({
 
 export default buildConfig({
   serverURL: process.env.NEXT_PUBLIC_SERVER_URL || '',
-  collections: [Users, Systems],
+  collections: [Users, Systems, NavItems],
   routes: {
     admin: '/backend',
   },

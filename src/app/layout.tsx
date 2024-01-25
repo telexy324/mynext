@@ -3,7 +3,8 @@ import { Toaster } from "@/components/ui/toaster";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { getServerSession } from "next-auth";
+import TRPCProviders from "@/components/Providers";
+import ThemeProvider from "@/components/layout/ThemeToggle/theme-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,14 +18,15 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getServerSession();
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className} overflow-hidden`}>
-        <Providers session={session}>
-          <Toaster />
-          {children}
-        </Providers>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <TRPCProviders>
+            <Toaster />
+            {children}
+          </TRPCProviders>
+        </ThemeProvider>
       </body>
     </html>
   );
