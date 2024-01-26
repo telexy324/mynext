@@ -6,7 +6,7 @@ import path from 'path'
 import { Users } from './collections/Users'
 import { Systems } from './collections/Systems'
 import dotenv from 'dotenv'
-import {NavItems} from "@/collections/NavItems";
+import { NavItems } from "./collections/NavItems";
 
 dotenv.config({
   path: path.resolve(__dirname, '../.env'),

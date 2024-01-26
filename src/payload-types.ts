@@ -10,6 +10,7 @@ export interface Config {
   collections: {
     users: User;
     systems: System;
+    navItems: NavItem;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
@@ -34,6 +35,15 @@ export interface System {
   status: 'beforeIntegration' | 'integrating' | 'inUse' | 'toDelete';
   user: (string | User)[];
   name: string;
+  updatedAt: string;
+  createdAt: string;
+}
+export interface NavItem {
+  id: string;
+  title: string;
+  href: string;
+  icon: string;
+  label: string;
   updatedAt: string;
   createdAt: string;
 }
